@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# OpenClaw Desktop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+OpenClaw Desktop is a user-friendly, zero-dependency visual client for the OpenClaw AI Agent framework. It allows you to run, configure, and manage autonomous AI agents locally without needing to touch the command line.
 
-Currently, two official plugins are available:
+Built securely with **Tauri v2 (Rust)**, **React**, **Vite**, and **TailwindCSS v4**, OpenClaw Desktop runs the underlying Node.js AI agent process entirely inside an isolated local sandbox directory (`~/OpenClaw-Workspace`).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📥 Installation & Setup
 
-## React Compiler
+1. **Clone the repository and install dependencies:**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+   ```bash
+   git clone https://github.com/ricardo0510/claw-startup.git
+   cd claw-startup
+   npm install
+   ```
 
-## Expanding the ESLint configuration
+2. **Run the Development Application:**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+   ```bash
+   npm run tauri dev
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+   _Note: On first run, Rust will download and compile native dependencies. This may take a few minutes._
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+3. **Build the Production Executable:**
+   ```bash
+   npm run tauri build
+   ```
+   This will create a standalone executable for your operating system in `src-tauri/target/release/`.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 How to Use OpenClaw Desktop
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The application organizes agent management into four main sections, accessible via the left sidebar:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Dashboard (控制台)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This is your main command center.
+
+- **Start Agent / Stop Agent:** Use these buttons to securely launch or forcibly terminate the background OpenClaw Node.js daemon.
+- **Status Indicator:** Shows whether the daemon is `Stopped`, `Running`, or `Error`.
+- **Terminal Window:** The dark panel at the bottom provides a real-time, scrolling view of the daemon's internal `stdout` and `stderr` logs, allowing you to monitor exactly what the AI agent is thinking and doing.
+
+### 2. Models Configuration (模型配置)
+
+Before the agent can think, it needs an LLM.
+
+- **Provider Settings:** Choose your preferred AI provider (DeepSeek, OpenAI, Anthropic, or local Ollama).
+- **API Key & Model Name:** Enter the API key and specific model string (e.g., `deepseek-chat`).
+- **Save & Restart:** Clicking save writes your configuration directly to the isolated environment file (`~/OpenClaw-Workspace/config/env.json`) and gracefully restarts the daemon to apply the new brain immediately.
+
+### 3. Skills Market (技能市场)
+
+Agents are only as good as the tools they have. The Skills Market allows you to dynamically expand your agent's capabilities.
+
+- **Browse:** View available official and community-made skills.
+- **Install:** Click the download icon to fetch the skill's YAML/Markdown definition file from the internet directly into your local `~/OpenClaw-Workspace/skills/` directory.
+
+### 4. Settings (设置)
+
+_(Upcoming feature)_ Advanced application settings, log management, and workspace customization.
+
+## 🛡️ Security & Sandboxing Architecture
+
+OpenClaw Desktop restricts the Node.js daemon using Rust system-level permissions:
+
+- **Directory Jail:** The underlying agent process is locked (`current_dir`) to `~/OpenClaw-Workspace/` in your Documents folder. It cannot inherently access files outside of this workspace unless explicitly granted by a skill.
+- **Environment Scrubbing:** All parent shell environment variables (except `PATH`) are cleared before the daemon starts to prevent accidental credential leakage. Configs are passed safely via the isolated JSON file.
