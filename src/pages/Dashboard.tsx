@@ -27,6 +27,8 @@ export function Dashboard() {
     } catch (e) {
       console.error(e);
       setStatus("Error");
+      const { emit } = await import("@tauri-apps/api/event");
+      await emit("process-log", `[Error] 启动失败: ${String(e)}`);
     } finally {
       setLoading(false);
     }
@@ -39,6 +41,8 @@ export function Dashboard() {
       setStatus("Stopped");
     } catch (e) {
       console.error(e);
+      const { emit } = await import("@tauri-apps/api/event");
+      await emit("process-log", `[Error] 停止失败: ${String(e)}`);
     } finally {
       setLoading(false);
     }
@@ -85,7 +89,7 @@ export function Dashboard() {
               Start or stop the background agent process
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex gap-4">
+          <CardContent className="flex flex-col md:flex-row gap-4">
             <Button
               size="lg"
               className="w-full gap-2"

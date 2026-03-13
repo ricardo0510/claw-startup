@@ -27,10 +27,12 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen bg-background text-foreground overflow-hidden">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="flex-1 overflow-y-auto p-8 bg-black/20">
-        <div className="mx-auto max-w-5xl h-full">{renderContent()}</div>
+      <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-black/20">
+        <div className="mx-auto max-w-5xl h-full flex flex-col">
+          {renderContent()}
+        </div>
       </main>
     </div>
   );

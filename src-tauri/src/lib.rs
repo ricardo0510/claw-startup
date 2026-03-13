@@ -3,8 +3,8 @@ use std::fs;
 use std::io::Write;
 
 #[tauri::command]
-fn start_openclaw(app: tauri::AppHandle) -> Result<String, String> {
-    daemon::start(app)
+async fn start_openclaw(app: tauri::AppHandle) -> Result<String, String> {
+    daemon::start(app).await
 }
 
 #[tauri::command]
