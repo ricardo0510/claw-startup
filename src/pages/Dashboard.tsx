@@ -22,6 +22,9 @@ export function Dashboard() {
   const handleStart = async () => {
     setLoading(true);
     try {
+      const { emit } = await import("@tauri-apps/api/event");
+      await emit("process-log", "[Info] 正在启动 OpenClaw Agent...");
+
       await api.startOpenClaw();
       setStatus("Running");
     } catch (e) {
@@ -120,7 +123,7 @@ export function Dashboard() {
           <CardContent className="space-y-2 text-sm">
             <div className="flex justify-between border-b pb-2">
               <span className="text-muted-foreground">Node.js</span>
-              <span className="font-mono">Checking...</span>
+              <span className="font-mono text-emerald-500">Auto-Managed</span>
             </div>
             <div className="flex justify-between border-b pb-2">
               <span className="text-muted-foreground">OpenClaw Version</span>
@@ -134,7 +137,26 @@ export function Dashboard() {
         </Card>
       </div>
 
-      <div className="flex-1 mt-4 rounded-xl overflow-hidden border shadow-sm min-h-[300px]">
+      <div className="bg-accent/50 border border-accent rounded-lg p-4 text-sm text-accent-foreground">
+        <h3 className="font-semibold mb-1">💡 如何使用 OpenClaw?</h3>
+        <p className="opacity-90 leading-relaxed">
+          OpenClaw 是一个<strong>纯粹的后台系统代理 (System Agent)</strong>
+          。它没有自己的聊天聊天框。
+          <br />
+          当你在上方点击 <strong>Start Agent</strong>{" "}
+          并看到下方控制台提示「Agent is listening...」后，OpenClaw
+          就会静默潜伏在你的电脑后台。
+          <br />
+          你可以随时在任何软件（如微信、记事本、浏览器）中按下{" "}
+          <kbd className="bg-background border px-1.5 py-0.5 rounded text-xs mx-1">
+            Ctrl + Space
+          </kbd>{" "}
+          或其他你在 OpenClaw
+          中配置的快捷键，即可唤醒它的悬浮指令框与它对话，它会自动操作你的电脑！
+        </p>
+      </div>
+
+      <div className="flex-1 rounded-xl overflow-hidden border shadow-sm min-h-[300px]">
         <TerminalWindow />
       </div>
     </div>
