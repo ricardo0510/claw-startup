@@ -12,13 +12,14 @@ export function TerminalWindow() {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [logs]);
 
-  // Mock listening to events
   React.useEffect(() => {
-    const timer = setInterval(() => {
-      // Mock data just for visual testing, will replace with Tauri events
-      // setLogs(prev => [...prev.slice(-49), `[Info] Log entry ${new Date().toLocaleTimeString()}`]);
-    }, 2000);
-    return () => clearInterval(timer);
+    const unlisten = listen<string>("process-log", (event) => {
+      setLogs((prev) => [...prev.slice(-199), event.payload]);
+    });
+
+    return () => {
+      unlisten.then((f) => f());
+    };
   }, []);
 
   return (
