@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Dashboard } from "@/pages/Dashboard";
+import { ModelsConfig } from "@/pages/ModelsConfig";
+import { SkillsMarket } from "@/pages/SkillsMarket";
 
 export default function App() {
   const [activeTab, setActiveTab] = React.useState("dashboard");
@@ -10,17 +12,9 @@ export default function App() {
       case "dashboard":
         return <Dashboard />;
       case "models":
-        return (
-          <div className="p-8 text-center text-muted-foreground">
-            Models configuration coming soon...
-          </div>
-        );
+        return <ModelsConfig />;
       case "skills":
-        return (
-          <div className="p-8 text-center text-muted-foreground">
-            Skills market coming soon...
-          </div>
-        );
+        return <SkillsMarket />;
       case "settings":
         return (
           <div className="p-8 text-center text-muted-foreground">
