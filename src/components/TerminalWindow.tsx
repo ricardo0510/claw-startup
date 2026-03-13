@@ -2,6 +2,8 @@ import * as React from "react";
 import { Terminal } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
+import { listen } from "@tauri-apps/api/event";
+
 export function TerminalWindow() {
   const [logs, setLogs] = React.useState<string[]>([
     "[System] Waiting for daemon to start...",
@@ -13,12 +15,12 @@ export function TerminalWindow() {
   }, [logs]);
 
   React.useEffect(() => {
-    const unlisten = listen<string>("process-log", (event) => {
+    const unlisten = listen<string>("process-log", (event: any) => {
       setLogs((prev) => [...prev.slice(-199), event.payload]);
     });
 
     return () => {
-      unlisten.then((f) => f());
+      unlisten.then((f: any) => f());
     };
   }, []);
 
